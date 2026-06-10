@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Pan de Vida — EEF</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f3ee; min-height: 100vh; }
+
+    .header {
+      background: #185FA5;
+      padding: 52px 20px 20px;
+      text-align: center;
+      color: white;
+    }
+    .header h1 { font-size: 22px; font-weight: 600; letter-spacing: 0.5px; }
+    .header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+
+    .content { padding: 16px; max-width: 480px; margin: 0 auto; }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+
+    .card label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .tag {
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid #ddd;
+      background: #f9f9f9;
+      color: #444;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tag.active { background: #185FA5; color: white; border-color: #185FA5; }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #e5e5e5;
+      border-radius: 10px;
+      font-size: 15px;
+      background: #fafafa;
+      color: #222;
+      outline: none;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus { border-color: #185FA5; background: white; }
+    textarea { min-height: 80px; resize: vertical; }
+
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+    .btn-generate {
+      width: 100%;
+      padding: 16px;
+      background: #185FA5;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: background 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-generate:active { transform: scale(0.97); background: #0C447C; }
+    .btn-generate:disabled { opacity: 0.5; }
+
+    .loading {
+      text-align: center;
+      padding: 24px;
+      color: #888;
+      font-size: 14px;
+      display: none;
+    }
+    .loading.visible { display: block; }
+
+    .verse-card {
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      display: none;
+      min-height: 320px;
+    }
+    .verse-card.visible { display: block; }
+
+    .verse-inner {
+      padding: 36px 24px 28px;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .deco-icon {
+      font-size: 90px;
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .verse-date {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 10px;
+    }
+
+    .verse-badge {
+      display: inline-block;
+      font-size: 12px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .verse-text {
+      font-size: 19px;
+      line-height: 1.75;
+      font-weight: 400;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .verse-ref {
+      font-size: 15px;
+      font-weight: 600;
+      opacity: 0.85;
+    }
+
+    .verse-church {
+      font-size: 11px;
+      letter-spacing: 1px;
+      opacity: 0.5;
+      margin-top: 20px;
+      text-transform: uppercase;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+      display: none;
+    }
+    .actions.visible { display: grid; }
+
+    .btn-action {
+      padding: 13px 8px;
+      border-radius: 12px;
+      border: 1.5px solid #e5e5e5;
+      background: white;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .btn-action:active { background: #f0f0f0; }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #222;
+      color: white;
+      padding: 10px 22px;
+      border-radius: 20px;
+      font-size: 14px;
+      transition: transform 0.3s;
+      z-index: 999;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🍞 Pan de Vida</h1>
+  <p>Iglesia "Él es Fiel" — Versículo del día</p>
+</div>
+
+<div class="content">
+
+  <div class="card">
+    <label>Tema del día</label>
+    <div class="tags" id="tagList">
+      <span class="tag" onclick="selTag(this, 'Fe y esperanza')">Fe y esperanza</span>
+      <span class="tag" onclick="selTag(this, 'Amor de Dios')">Amor de Dios</span>
+      <span class="tag" onclick="selTag(this, 'Fortaleza')">Fortaleza</span>
+      <span class="tag" onclick="selTag(this, 'Paz interior')">Paz interior</span>
+      <span class="tag" onclick="selTag(this, 'Gratitud')">Gratitud</span>
+      <span class="tag" onclick="selTag(this, 'Sabiduría')">Sabiduría</span>
+      <span class="tag" onclick="selTag(this, 'Familia')">Familia</span>
+      <span class="tag" onclick="selTag(this, 'Promesas de Dios')">Promesas de Dios</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>O escribe tu propio tema</label>
+    <input type="text" id="temaCustom" placeholder="ej. perseverancia, perdón, misión..." />
+  </div>
+
+  <div class="card">
+    <label>Estilo visual</label>
+    <select id="estilo">
+      <option value="amanecer">🌅 Amanecer — cálido y esperanzador</option>
+      <option value="noche">🌙 Noche — profundo y contemplativo</option>
+      <option value="naturaleza">🌿 Naturaleza — fresco y vital</option>
+      <option value="fuego">🔥 Fuego — apasionado y urgente</option>
+      <option value="mar">🌊 Mar — tranquilo y vasto</option>
+      <option value="cielo">☁️ Cielo — puro y celestial</option>
+      <option value="aleatorio">✨ Sorpréndeme</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <label>Versículo específico (opcional)</label>
+    <textarea id="versiculoManual" placeholder="Pega aquí un versículo, o deja vacío para que la IA elija uno según el tema."></textarea>
+  </div>
+
+  <button class="btn-generate" id="btnGenerar" onclick="generarPan()">
+    ✨ Generar Pan de Vida
+  </button>
+
+  <div class="loading" id="loadingMsg">
+    <div class="spinner" style="border-color:rgba(24,95,165,0.3);border-top-color:#185FA5;margin:0 auto 10px;"></div>
+    Preparando el versículo del día...
+  </div>
+
+  <div class="verse-card" id="verseCard">
+    <div class="verse-inner" id="verseInner">
+      <span class="deco-icon" id="decoIcon"></span>
+      <p class="verse-date" id="verseDate"></p>
+      <span class="verse-badge" id="verseBadge"></span>
+      <p class="verse-text" id="verseText"></p>
+      <p class="verse-ref" id="verseRef"></p>
+      <p class="verse-church">Iglesia "Él es Fiel"</p>
+    </div>
+  </div>
+
+  <div class="actions" id="actions">
+    <button class="btn-action" onclick="copiarTexto()">📋 Copiar texto</button>
+    <button class="btn-action" onclick="nuevoDiseno()">🎨 Nuevo diseño</button>
+    <button class="btn-action" onclick="compartir()">📤 Compartir</button>
+    <button class="btn-action" onclick="generarPan()">🔄 Otro versículo</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ESTILOS = {
+  amanecer: { bg:'linear-gradient(145deg,#FEE5C0,#FBBF6E,#F97C4A)', color:'#4A1B0C', badge:'rgba(250,180,80,0.35)', badgeColor:'#712B13', icon:'☀️' },
+  noche:    { bg:'linear-gradient(145deg,#1a1a3e,#26215C,#0C447C)', color:'#E6F1FB', badge:'rgba(100,120,220,0.3)',   badgeColor:'#B5D4F4', icon:'🌙' },
+  naturaleza:{ bg:'linear-gradient(145deg,#EAF3DE,#C0DD97,#639922)', color:'#173404', badge:'rgba(100,180,80,0.3)',  badgeColor:'#27500A', icon:'🌿' },
+  fuego:    { bg:'linear-gradient(145deg,#FAEEDA,#EF9F27,#D85A30)', color:'#412402', badge:'rgba(240,150,50,0.35)',   badgeColor:'#633806', icon:'🔥' },
+  mar:      { bg:'linear-gradient(145deg,#E6F1FB,#85B7EB,#185FA5)', color:'#042C53', badge:'rgba(80,150,220,0.25)',   badgeColor:'#0C447C', icon:'🌊' },
+  cielo:    { bg:'linear-gradient(145deg,#ffffff,#E6F1FB,#B5D4F4)', color:'#042C53', badge:'rgba(150,190,240,0.3)',   badgeColor:'#185FA5', icon:'☁️' }
+};
+
+let temaSeleccionado = '';
+let datosActuales = null;
+let estiloActual = null;
+
+function selTag(el, tema) {
+  document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  temaSeleccionado = tema;
+  document.getElementById('temaCustom').value = '';
+}
+
+function getEstilo(forzarNuevo = false) {
+  const sel = document.getElementById('estilo').value;
+  const keys = Object.keys(ESTILOS);
+  if (sel === 'aleatorio' || forzarNuevo) {
+    let k;
+    do { k = keys[Math.floor(Math.random() * keys.length)]; } while (k === estiloActual && keys.length > 1);
+    return k;
+  }
+  return sel;
+}
+
+function aplicarEstilo(datos, estiloKey) {
+  estiloActual = estiloKey;
+  const e = ESTILOS[estiloKey];
+  const inner = document.getElementById('verseInner');
+  inner.style.background = e.bg;
+  inner.style.color = e.color;
+
+  document.getElementById('decoIcon').textContent = e.icon;
+  const badge = document.getElementById('verseBadge');
+  badge.style.background = e.badge;
+  badge.style.color = e.badgeColor;
+  badge.textContent = datos.tema;
+
+  const now = new Date();
+  document.getElementById('verseDate').textContent = now.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
+  document.getElementById('verseText').textContent = '\u201c' + datos.versiculo + '\u201d';
+  document.getElementById('verseRef').textContent = '— ' + datos.referencia;
+
+  ['verseDate','verseText','verseRef'].forEach(id => {
+    document.getElementById(id).style.color = e.color;
+  });
+
+  document.getElementById('verseCard').classList.add('visible');
+  document.getElementById('actions').classList.add('visible');
+}
+
+function nuevoDiseno() {
+  if (datosActuales) aplicarEstilo(datosActuales, getEstilo(true));
+}
+
+async function generarPan() {
+  const custom = document.getElementById('temaCustom').value.trim();
+  const tema = custom || temaSeleccionado || 'fe y esperanza';
+  const versiculoManual = document.getElementById('versiculoManual').value.trim();
+  const btn = document.getElementById('btnGenerar');
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Generando...';
+  document.getElementById('loadingMsg').classList.add('visible');
+  document.getElementById('verseCard').classList.remove('visible');
+  document.getElementById('actions').classList.remove('visible');
+
+  const prompt = versiculoManual
+    ? `Dado este versículo bíblico: "${versiculoManual}", extrae el texto limpio y la referencia exacta. Responde SOLO en JSON sin markdown: {"versiculo":"texto","referencia":"Libro cap:ver","tema":"${tema}"}`
+    : `Selecciona un versículo bíblico de la Reina-Valera 1960 apropiado para el tema: "${tema}". Debe ser inspirador, máximo 3 líneas, conocido y completo. Responde SOLO en JSON sin markdown ni texto adicional: {"versiculo":"texto del versículo","referencia":"Libro capítulo:versículo","tema":"${tema}"}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role:'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.map(i => i.text || '').join('');
+    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+    datosActuales = parsed;
+    aplicarEstilo(parsed, getEstilo());
+  } catch(e) {
+    mostrarToast('Error al generar. Verifica tu conexión.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ Generar Pan de Vida';
+    document.getElementById('loadingMsg').classList.remove('visible');
+  }
+}
+
+function copiarTexto() {
+  if (!datosActuales) return;
+  const txt = `"${datosActuales.versiculo}"\n— ${datosActuales.referencia}\n\nIglesia "Él es Fiel"`;
+  navigator.clipboard.writeText(txt).then(() => mostrarToast('¡Texto copiado!')).catch(() => mostrarToast('No se pudo copiar'));
+}
+
+async function compartir() {
+  if (!datosActuales) return;
+  const txt = `🍞 Pan de Vida\n\n"${datosActuales.versiculo}"\n— ${datosActuales.referencia}\n\nIglesia "Él es Fiel"`;
+  if (navigator.share) {
+    await navigator.share({ title:'Pan de Vida', text: txt }).catch(() => {});
+  } else {
+    copiarTexto();
+  }
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

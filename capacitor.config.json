@@ -1,0 +1,13 @@
+{
+  "appId": "com.eef.pandevida",
+  "appName": "Pan de Vida",
+  "webDir": "www",
+  "server": {
+    "cleartext": true,
+    "allowNavigation": ["api.anthropic.com"]
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#185FA5"
+  }
+}
