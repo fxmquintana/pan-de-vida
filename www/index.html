@@ -575,21 +575,35 @@ function nuevoDiseno(){
 async function compartirImagen(){
   const canvas=document.getElementById('verseCanvas');
   if(!versiculoActual){ toast('Primero genera un versículo'); return; }
-  try{
+  const dataUrl = canvas.toDataURL('image/png', 0.95);
+  const texto = '"'+versiculoActual.t+'"\n— '+versiculoActual.r+'\n\nIglesia "Él es Fiel"';
+  try {
+    // Try Capacitor Share plugin first (native Android share sheet)
+    if(window.Capacitor && window.Capacitor.isNativePlatform()){
+      const { Share } = window.Capacitor.Plugins;
+      await Share.share({
+        title: 'Pan de Vida — Iglesia "Él es Fiel"',
+        text: texto,
+        url: dataUrl,
+        dialogTitle: 'Compartir Pan de Vida'
+      });
+      return;
+    }
+    // Web fallback: try sharing file
     canvas.toBlob(async(blob)=>{
       const file=new File([blob],'pan-de-vida-eef.png',{type:'image/png'});
       if(navigator.canShare && navigator.canShare({files:[file]})){
-        await navigator.share({files:[file],title:'Pan de Vida',text:'Iglesia "Él es Fiel"'});
+        await navigator.share({files:[file], title:'Pan de Vida', text:texto});
       } else if(navigator.share){
-        await navigator.share({title:'Pan de Vida — EEF',text:'"'+versiculoActual.t+'"\n— '+versiculoActual.r+'\n\nIglesia "Él es Fiel"'});
+        await navigator.share({title:'Pan de Vida — EEF', text:texto});
       } else {
-        // Download fallback
-        const url=canvas.toDataURL('image/png');
-        const a=document.createElement('a'); a.href=url; a.download='pan-de-vida-eef.png'; a.click();
-        toast('Imagen guardada');
+        const a=document.createElement('a'); a.href=dataUrl; a.download='pan-de-vida-eef.png'; a.click();
+        toast('Imagen guardada en Descargas');
       }
     },'image/png',0.95);
-  }catch(e){ toast('No se pudo compartir'); }
+  } catch(e){
+    if(e.name!=='AbortError') toast('No se pudo compartir');
+  }
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────────
