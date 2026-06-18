@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
   <title>Pan de Vida — EEF</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f3ee; min-height: 100vh; }
-    .header { background: #185FA5; padding: 48px 20px 16px; text-align: center; color: white; }
-    .header-logo { width: 56px; height: 56px; object-fit: contain; margin-bottom: 8px; filter: brightness(0) invert(1); }
-    .header h1 { font-size: 20px; font-weight: 700; }
-    .header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
-    .nav { display: flex; background: white; border-bottom: 1px solid #eee; }
-    .nav-tab { flex: 1; padding: 11px; text-align: center; font-size: 13px; font-weight: 600; color: #999; border-bottom: 3px solid transparent; cursor: pointer; }
-    .nav-tab.active { color: #185FA5; border-bottom-color: #185FA5; }
-    .screen { display: none; padding: 14px; max-width: 480px; margin: 0 auto; }
-    .screen.active { display: block; }
-    .card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-    .card label { display: block; font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .tags { display: flex; flex-wrap: wrap; gap: 7px; }
-    .tag { font-size: 12px; padding: 6px 12px; border-radius: 20px; border: 1.5px solid #ddd; background: #f9f9f9; color: #444; cursor: pointer; }
-    .tag.active { background: #185FA5; color: white; border-color: #185FA5; }
-    select { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e5e5; border-radius: 10px; font-size: 14px; background: #fafafa; color: #222; outline: none; font-family: inherit; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
-    .btn-primary { width: 100%; padding: 14px; background: #185FA5; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 12px; }
-    .btn-primary:active { opacity: 0.85; }
-    .verse-card { border-radius: 20px; overflow: hidden; margin-bottom: 12px; display: none; }
-    .verse-card.visible { display: block; }
-    .verse-inner { padding: 32px 22px 26px; min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; }
-    .deco-icon { font-size: 80px; position: absolute; top: 10px; right: 12px; opacity: 0.1; pointer-events: none; }
-    .verse-logo { width: 36px; height: 36px; object-fit: contain; margin-bottom: 10px; opacity: 0.85; position: relative; z-index: 1; }
-    .vdate { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.6; margin-bottom: 8px; position: relative; z-index: 1; }
-    .vbadge { display: inline-block; font-size: 11px; padding: 3px 12px; border-radius: 20px; margin-bottom: 16px; font-weight: 600; position: relative; z-index: 1; }
-    .vtext { font-size: 18px; line-height: 1.75; font-style: italic; margin-bottom: 14px; position: relative; z-index: 1; }
-    .vref { font-size: 14px; font-weight: 700; opacity: 0.85; position: relative; z-index: 1; }
-    .vchurch { font-size: 10px; letter-spacing: 1.5px; opacity: 0.4; margin-top: 14px; text-transform: uppercase; position: relative; z-index: 1; }
-    .actions { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
-    .actions.visible { display: grid; }
-    .btn-action { padding: 11px 8px; border-radius: 10px; border: 1.5px solid #e5e5e5; background: white; font-size: 13px; font-weight: 500; color: #333; cursor: pointer; }
-    .btn-action:active { background: #f0f0f0; }
-    .input-field { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e5e5; border-radius: 10px; font-size: 14px; background: #fafafa; color: #222; outline: none; margin-bottom: 8px; font-family: inherit; }
-    textarea.input-field { min-height: 70px; resize: vertical; }
-    .verse-item { background: white; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-    .verse-item-text { flex: 1; }
-    .verse-item-text p { font-size: 13px; line-height: 1.5; color: #333; margin-bottom: 2px; }
-    .verse-item-text span { font-size: 11px; color: #888; font-weight: 600; }
-    .btn-del { background: #dc3545; color: white; border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    .stat { background: white; border-radius: 10px; padding: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
-    .stat-num { font-size: 20px; font-weight: 700; color: #185FA5; }
-    .stat-label { font-size: 10px; color: #999; margin-top: 2px; }
-    .badge-custom { display: inline-block; font-size: 10px; padding: 1px 6px; background: #e8f4e8; color: #2d6a2d; border-radius: 8px; margin-left: 4px; }
-    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: #222; color: white; padding: 8px 18px; border-radius: 18px; font-size: 13px; transition: transform 0.3s; z-index: 999; pointer-events: none; white-space: nowrap; }
-    .toast.show { transform: translateX(-50%) translateY(0); }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f3ee;min-height:100vh;}
+    .header{background:#185FA5;padding:46px 20px 14px;text-align:center;color:white;}
+    .header-logo{width:52px;height:52px;object-fit:contain;margin-bottom:6px;filter:brightness(0) invert(1);}
+    .header h1{font-size:20px;font-weight:700;}
+    .header p{font-size:12px;opacity:0.8;margin-top:2px;}
+    .nav{display:flex;background:white;border-bottom:1px solid #eee;}
+    .nav-tab{flex:1;padding:11px;text-align:center;font-size:13px;font-weight:600;color:#999;border-bottom:3px solid transparent;cursor:pointer;}
+    .nav-tab.active{color:#185FA5;border-bottom-color:#185FA5;}
+    .screen{display:none;padding:14px;max-width:480px;margin:0 auto;}
+    .screen.active{display:block;}
+    .card{background:white;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.07);}
+    .card label{display:block;font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+    .tags{display:flex;flex-wrap:wrap;gap:7px;}
+    .tag{font-size:12px;padding:6px 12px;border-radius:20px;border:1.5px solid #ddd;background:#f9f9f9;color:#444;cursor:pointer;}
+    .tag.active{background:#185FA5;color:white;border-color:#185FA5;}
+    select{width:100%;padding:9px 12px;border:1.5px solid #e5e5e5;border-radius:10px;font-size:14px;background:#fafafa;color:#222;outline:none;font-family:inherit;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+    .btn-primary{width:100%;padding:14px;background:#185FA5;color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:12px;}
+    .btn-primary:active{opacity:0.85;}
+    .verse-preview{border-radius:16px;overflow:hidden;margin-bottom:12px;display:none;position:relative;}
+    .verse-preview.visible{display:block;}
+    .verse-canvas-wrap{position:relative;width:100%;padding-bottom:100%;overflow:hidden;border-radius:16px;}
+    .verse-canvas-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+    .actions{display:none;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+    .actions.visible{display:grid;}
+    .btn-action{padding:11px 8px;border-radius:10px;border:1.5px solid #e5e5e5;background:white;font-size:13px;font-weight:500;color:#333;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;}
+    .btn-action:active{background:#f0f0f0;}
+    .btn-share-img{grid-column:1/-1;background:#185FA5;color:white;border-color:#185FA5;font-size:15px;font-weight:700;padding:14px;}
+    .input-field{width:100%;padding:9px 12px;border:1.5px solid #e5e5e5;border-radius:10px;font-size:14px;background:#fafafa;color:#222;outline:none;margin-bottom:8px;font-family:inherit;}
+    textarea.input-field{min-height:70px;resize:vertical;}
+    .verse-item{background:white;border-radius:10px;padding:10px 12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,0.07);display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+    .verse-item-text{flex:1;}
+    .verse-item-text p{font-size:13px;line-height:1.5;color:#333;margin-bottom:2px;}
+    .verse-item-text span{font-size:11px;color:#888;font-weight:600;}
+    .btn-del{background:#dc3545;color:white;border:none;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+    .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+    .stat{background:white;border-radius:10px;padding:10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.07);}
+    .stat-num{font-size:20px;font-weight:700;color:#185FA5;}
+    .stat-label{font-size:10px;color:#999;margin-top:2px;}
+    .badge-custom{display:inline-block;font-size:10px;padding:1px 6px;background:#e8f4e8;color:#2d6a2d;border-radius:8px;margin-left:4px;}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#222;color:white;padding:8px 18px;border-radius:18px;font-size:13px;transition:transform 0.3s;z-index:999;pointer-events:none;white-space:nowrap;}
+    .toast.show{transform:translateX(-50%) translateY(0);}
+    .style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+    .style-opt{border-radius:10px;overflow:hidden;cursor:pointer;border:2.5px solid transparent;position:relative;}
+    .style-opt.active{border-color:#185FA5;}
+    .style-opt canvas{display:block;width:100%;aspect-ratio:1;}
+    .style-opt span{display:block;text-align:center;font-size:11px;font-weight:600;color:#444;padding:4px 2px;}
   </style>
 </head>
 <body>
 
 <div class="header">
-  <img class="header-logo" src="data:image/png;base64,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" alt="Logo EEF" />
+  <img class="header-logo" id="headerLogo" alt="Logo EEF"/>
   <h1>Pan de Vida</h1>
   <p>Iglesia "Él es Fiel"</p>
 </div>
@@ -73,35 +73,32 @@
     <label>Tema del día</label>
     <div class="tags" id="tagList"></div>
   </div>
+
   <div class="card">
-    <label>Estilo visual</label>
-    <select id="estilo">
-      <option value="amanecer">🌅 Amanecer — cálido y esperanzador</option>
-      <option value="noche">🌙 Noche — profundo y contemplativo</option>
-      <option value="naturaleza">🌿 Naturaleza — fresco y vital</option>
-      <option value="fuego">🔥 Fuego — apasionado y urgente</option>
-      <option value="mar">🌊 Mar — tranquilo y vasto</option>
-      <option value="cielo">☁️ Cielo — puro y celestial</option>
-      <option value="aleatorio">✨ Sorpréndeme</option>
-    </select>
-  </div>
-  <button class="btn-primary" onclick="generarPan()">✨ Generar Pan de Vida</button>
-  <div class="verse-card" id="verseCard">
-    <div class="verse-inner" id="verseInner">
-      <span class="deco-icon" id="decoIcon"></span>
-      <img class="verse-logo" id="verseLogo" src="data:image/png;base64,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" alt="EEF" />
-      <p class="vdate" id="verseDate"></p>
-      <span class="vbadge" id="verseBadge"></span>
-      <p class="vtext" id="verseText"></p>
-      <p class="vref" id="verseRef"></p>
-      <p class="vchurch">Iglesia "Él es Fiel"</p>
+    <label>Estilo de fondo</label>
+    <div class="style-grid" id="styleGrid"></div>
+    <div style="margin-top:10px;border-top:1px solid #eee;padding-top:10px;">
+      <label style="margin-bottom:6px;">📷 O usa tu propia foto</label>
+      <div id="uploadZone" onclick="document.getElementById('fotoInput').click()" style="border:2px dashed #ccc;border-radius:10px;padding:14px;text-align:center;cursor:pointer;color:#888;font-size:13px;">
+        <span id="uploadLabel">Toca aquí para elegir una foto de tu galería</span>
+      </div>
+      <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="cargarFotoPropia(this)"/>
+      <button id="btnQuitarFoto" onclick="quitarFotoPropia()" style="display:none;width:100%;margin-top:8px;padding:8px;border:1.5px solid #dc3545;background:white;color:#dc3545;border-radius:8px;font-size:13px;cursor:pointer;">✕ Quitar foto propia</button>
     </div>
   </div>
+
+  <button class="btn-primary" onclick="generarPan()">✨ Generar Pan de Vida</button>
+
+  <div class="verse-preview" id="versePreview">
+    <div class="verse-canvas-wrap">
+      <canvas id="verseCanvas" width="1080" height="1080"></canvas>
+    </div>
+  </div>
+
   <div class="actions" id="actions">
-    <button class="btn-action" onclick="copiarTexto()">📋 Copiar</button>
     <button class="btn-action" onclick="nuevoDiseno()">🎨 Nuevo diseño</button>
-    <button class="btn-action" onclick="compartir()">📤 Compartir</button>
     <button class="btn-action" onclick="generarPan()">🔄 Otro versículo</button>
+    <button class="btn-action btn-share-img" onclick="compartirImagen()">📤 Compartir imagen</button>
   </div>
 </div>
 
@@ -112,12 +109,12 @@
     <label>➕ Agregar versículo</label>
     <select class="input-field" id="nuevoTema"></select>
     <textarea class="input-field" id="nuevoTexto" placeholder="Texto del versículo..."></textarea>
-    <input type="text" class="input-field" id="nuevaRef" placeholder="Referencia — ej. Juan 3:16" />
+    <input type="text" class="input-field" id="nuevaRef" placeholder="Referencia — ej. Juan 3:16"/>
     <button class="btn-primary" onclick="agregarVersiculo()" style="margin-bottom:0">Guardar versículo</button>
   </div>
   <div class="card">
     <label>➕ Nuevo tema</label>
-    <input type="text" class="input-field" id="nuevoTemaName" placeholder="ej. Perseverancia" />
+    <input type="text" class="input-field" id="nuevoTemaName" placeholder="ej. Perseverancia"/>
     <button class="btn-primary" onclick="agregarTema()" style="margin-bottom:0">Crear tema</button>
   </div>
   <div class="card">
@@ -132,40 +129,264 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ── LOGO ──────────────────────────────────────────────────────────
 const LOGO_SRC = "data:image/png;base64,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";
+document.getElementById('headerLogo').src = LOGO_SRC;
+const logoImg = new Image();
+logoImg.src = LOGO_SRC;
 
+// ── VERSÍCULOS ────────────────────────────────────────────────────
 const VD = {
-  fe:{nombre:"Fe y esperanza",vs:[{t:"Porque por fe andamos, no por vista.",r:"2 Corintios 5:7"},{t:"Es, pues, la fe la certeza de lo que se espera, la convicción de lo que no se ve.",r:"Hebreos 11:1"},{t:"Jesús le dijo: Si puedes creer, al que cree todo le es posible.",r:"Marcos 9:23"},{t:"Confía en el SEÑOR con todo tu corazón, y no te apoyes en tu propio entendimiento.",r:"Proverbios 3:5"},{t:"El justo por la fe vivirá.",r:"Romanos 1:17"},{t:"Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá.",r:"Mateo 7:7"},{t:"Porque todo lo que es nacido de Dios vence al mundo; y esta es la victoria que ha vencido al mundo, nuestra fe.",r:"1 Juan 5:4"},{t:"Mas el que persevere hasta el fin, éste será salvo.",r:"Mateo 24:13"},{t:"Somos hechura suya, creados en Cristo Jesús para buenas obras.",r:"Efesios 2:10"},{t:"Abraham creyó a Dios, y le fue contado por justicia.",r:"Romanos 4:3"}]},
-  amor:{nombre:"Amor de Dios",vs:[{t:"Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.",r:"Juan 3:16"},{t:"El amor es sufrido, es benigno; el amor no tiene envidia, el amor no es jactancioso, no se envanece.",r:"1 Corintios 13:4"},{t:"En esto consiste el amor: no en que nosotros hayamos amado a Dios, sino en que él nos amó a nosotros.",r:"1 Juan 4:10"},{t:"Amados, amémonos unos a otros; porque el amor es de Dios.",r:"1 Juan 4:7"},{t:"Nadie tiene mayor amor que este, que uno ponga su vida por sus amigos.",r:"Juan 15:13"},{t:"Y sobre todas estas cosas vestíos de amor, que es el vínculo perfecto.",r:"Colosenses 3:14"},{t:"El que no ama no ha conocido a Dios; porque Dios es amor.",r:"1 Juan 4:8"},{t:"Mas Dios muestra su amor para con nosotros, en que siendo aún pecadores, Cristo murió por nosotros.",r:"Romanos 5:8"},{t:"Amarás al Señor tu Dios con todo tu corazón, y con toda tu alma, y con toda tu mente.",r:"Mateo 22:37"}]},
-  fortaleza:{nombre:"Fortaleza",vs:[{t:"Todo lo puedo en Cristo que me fortalece.",r:"Filipenses 4:13"},{t:"El SEÑOR es mi fortaleza y mi escudo; en él confió mi corazón, y fui ayudado.",r:"Salmos 28:7"},{t:"¡Sé fuerte y valiente! No temas ni te desalientes.",r:"Josué 1:9"},{t:"Esforzaos y cobrad ánimo; no temáis, porque Jehová tu Dios es el que va contigo.",r:"Deuteronomio 31:6"},{t:"Pero los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas.",r:"Isaías 40:31"},{t:"No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo.",r:"Isaías 41:10"},{t:"Jehová es mi luz y mi salvación; ¿de quién temeré?",r:"Salmos 27:1"},{t:"Y me ha dicho: Bástate mi gracia; porque mi poder se perfecciona en la debilidad.",r:"2 Corintios 12:9"},{t:"Jehová peleará por vosotros, y vosotros estaréis tranquilos.",r:"Éxodo 14:14"},{t:"Esforzaos en el Señor, y en el poder de su fuerza.",r:"Efesios 6:10"}]},
-  paz:{nombre:"Paz interior",vs:[{t:"La paz os dejo, mi paz os doy. No se turbe vuestro corazón, ni tenga miedo.",r:"Juan 14:27"},{t:"Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios en toda oración y ruego, con acción de gracias.",r:"Filipenses 4:6"},{t:"Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones y vuestros pensamientos en Cristo Jesús.",r:"Filipenses 4:7"},{t:"Tú guardarás en completa paz a aquel cuyo pensamiento en ti persevera.",r:"Isaías 26:3"},{t:"Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar.",r:"Mateo 11:28"},{t:"Echad toda vuestra ansiedad sobre él, porque él tiene cuidado de vosotros.",r:"1 Pedro 5:7"},{t:"En paz me acostaré, y asimismo dormiré; porque solo tú, Jehová, me haces vivir confiado.",r:"Salmos 4:8"},{t:"Bienaventurados los pacificadores, porque ellos serán llamados hijos de Dios.",r:"Mateo 5:9"}]},
-  gratitud:{nombre:"Gratitud",vs:[{t:"Dad gracias en todo, porque esta es la voluntad de Dios para con vosotros en Cristo Jesús.",r:"1 Tesalonicenses 5:18"},{t:"Entrad por sus puertas con acción de gracias, por sus atrios con alabanza; alabadle, bendecid su nombre.",r:"Salmos 100:4"},{t:"¡Gracias a Dios por su don inefable!",r:"2 Corintios 9:15"},{t:"Este es el día que hizo Jehová; nos gozaremos y alegraremos en él.",r:"Salmos 118:24"},{t:"Bendice, alma mía, a Jehová, y no olvides ninguno de sus beneficios.",r:"Salmos 103:2"},{t:"Cantad a Jehová cántico nuevo; cantad a Jehová, toda la tierra.",r:"Salmos 96:1"}]},
-  sabiduria:{nombre:"Sabiduría",vs:[{t:"El principio de la sabiduría es el temor de Jehová.",r:"Proverbios 9:10"},{t:"Y si alguno de vosotros tiene falta de sabiduría, pídala a Dios, el cual da a todos abundantemente y sin reproche.",r:"Santiago 1:5"},{t:"Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia.",r:"Proverbios 3:5"},{t:"Porque Jehová da la sabiduría, y de su boca viene el conocimiento y la inteligencia.",r:"Proverbios 2:6"},{t:"El que halla la sabiduría halla la vida, y alcanza el favor de Jehová.",r:"Proverbios 8:35"},{t:"Bienaventurado el hombre que halla la sabiduría, y que obtiene la inteligencia.",r:"Proverbios 3:13"},{t:"Adquiere sabiduría, adquiere inteligencia; no te olvides ni te apartes de las razones de mi boca.",r:"Proverbios 4:5"}]},
-  familia:{nombre:"Familia",vs:[{t:"Honra a tu padre y a tu madre, para que tus días se alarguen en la tierra.",r:"Éxodo 20:12"},{t:"Pero yo y mi casa serviremos a Jehová.",r:"Josué 24:15"},{t:"Los hijos son herencia de Jehová; y fruto del vientre su recompensa.",r:"Salmos 127:3"},{t:"Instruye al niño en su camino, y aun cuando fuere viejo no se apartará de él.",r:"Proverbios 22:6"},{t:"Maridos, amad a vuestras mujeres, así como Cristo amó a la iglesia.",r:"Efesios 5:25"},{t:"La mujer virtuosa, ¿quién la hallará? Porque su estima sobrepasa largamente a la de las piedras preciosas.",r:"Proverbios 31:10"},{t:"Y vosotros, padres, no provoquéis a ira a vuestros hijos, sino criadlos en disciplina y amonestación del Señor.",r:"Efesios 6:4"}]},
-  promesas:{nombre:"Promesas de Dios",vs:[{t:"Porque yo sé los pensamientos que tengo acerca de vosotros, dice Jehová, pensamientos de paz, y no de mal, para daros el fin que esperáis.",r:"Jeremías 29:11"},{t:"Y sabemos que a los que aman a Dios, todas las cosas les ayudan a bien.",r:"Romanos 8:28"},{t:"Mi Dios, pues, suplirá todo lo que os falta conforme a sus riquezas en gloria en Cristo Jesús.",r:"Filipenses 4:19"},{t:"Las misericordias de Jehová no decaen. Nuevas son cada mañana.",r:"Lamentaciones 3:22-23"},{t:"He aquí yo estoy con vosotros todos los días, hasta el fin del mundo.",r:"Mateo 28:20"},{t:"Ninguna arma forjada contra ti prosperará.",r:"Isaías 54:17"},{t:"Clama a mí, y yo te responderé, y te enseñaré cosas grandes y ocultas.",r:"Jeremías 33:3"},{t:"El cielo y la tierra pasarán, pero mis palabras no pasarán.",r:"Mateo 24:35"}]},
-  oracion:{nombre:"Oración",vs:[{t:"Orad sin cesar.",r:"1 Tesalonicenses 5:17"},{t:"Cercano está Jehová a todos los que le invocan de veras.",r:"Salmos 145:18"},{t:"Si se humillare mi pueblo, y oraren, y buscaren mi rostro... yo oiré desde los cielos.",r:"2 Crónicas 7:14"},{t:"Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá.",r:"Mateo 7:7"},{t:"Y todo lo que pidiereis en oración, creyendo, lo recibiréis.",r:"Mateo 21:22"},{t:"La oración eficaz del justo puede mucho.",r:"Santiago 5:16"},{t:"Mas tú, cuando ores, entra en tu aposento, y cerrada la puerta, ora a tu Padre que está en secreto.",r:"Mateo 6:6"}]},
-  perdon:{nombre:"Perdón",vs:[{t:"Si confesamos nuestros pecados, él es fiel y justo para perdonar nuestros pecados, y limpiarnos de toda maldad.",r:"1 Juan 1:9"},{t:"Sed benignos unos con otros, misericordiosos, perdonándoos unos a otros, como Dios también os perdonó en Cristo.",r:"Efesios 4:32"},{t:"Cuanto está lejos el oriente del occidente, hizo alejar de nosotros nuestras rebeliones.",r:"Salmos 103:12"},{t:"Porque si perdonáis a los hombres sus ofensas, os perdonará también a vosotros vuestro Padre celestial.",r:"Mateo 6:14"},{t:"Yo, yo soy el que borro tus rebeliones por amor de mí mismo.",r:"Isaías 43:25"},{t:"Bienaventurado aquel cuya transgresión ha sido perdonada, y cubierto su pecado.",r:"Salmos 32:1"}]},
-  mision:{nombre:"Misión",vs:[{t:"Id, y haced discípulos a todas las naciones, bautizándolos en el nombre del Padre, y del Hijo, y del Espíritu Santo.",r:"Mateo 28:19"},{t:"Vosotros sois la luz del mundo; una ciudad asentada sobre un monte no se puede esconder.",r:"Mateo 5:14"},{t:"Me seréis testigos en Jerusalén, en toda Judea, en Samaria, y hasta lo último de la tierra.",r:"Hechos 1:8"},{t:"Vosotros sois la sal de la tierra.",r:"Mateo 5:13"},{t:"La mies a la verdad es mucha, mas los obreros pocos; rogad al Señor de la mies que envíe obreros.",r:"Lucas 10:2"}]},
-  alabanza:{nombre:"Alabanza",vs:[{t:"Alabad a Jehová, porque él es bueno; porque para siempre es su misericordia.",r:"Salmos 136:1"},{t:"Todo lo que respira alabe a JAH. Aleluya.",r:"Salmos 150:6"},{t:"Regocijaos en el Señor siempre. Otra vez digo: ¡Regocijaos!",r:"Filipenses 4:4"},{t:"Cantad a Jehová cántico nuevo; su alabanza sea en la congregación de los santos.",r:"Salmos 149:1"},{t:"Bendice, alma mía, a Jehová, y bendiga todo mi ser su santo nombre.",r:"Salmos 103:1"},{t:"Aclamad a Dios con alegría, toda la tierra. Cantad la gloria de su nombre.",r:"Salmos 66:1-2"}]},
-  perseverancia:{nombre:"Perseverancia",vs:[{t:"No nos cansemos, pues, de hacer bien; porque a su tiempo segaremos, si no desmayamos.",r:"Gálatas 6:9"},{t:"Corramos con paciencia la carrera que tenemos por delante.",r:"Hebreos 12:1"},{t:"Sabiendo que la prueba de vuestra fe produce paciencia.",r:"Santiago 1:3"},{t:"El que comenzó en vosotros la buena obra, la perfeccionará hasta el día de Jesucristo.",r:"Filipenses 1:6"},{t:"Hermanos míos, tened por sumo gozo cuando os halléis en diversas pruebas.",r:"Santiago 1:2"}]},
-  salvacion:{nombre:"Salvación",vs:[{t:"Porque por gracia sois salvos por medio de la fe; y esto no de vosotros, pues es don de Dios.",r:"Efesios 2:8"},{t:"Yo soy el camino, y la verdad, y la vida; nadie viene al Padre, sino por mí.",r:"Juan 14:6"},{t:"En ningún otro hay salvación; porque no hay otro nombre bajo el cielo en que podamos ser salvos.",r:"Hechos 4:12"},{t:"Porque todo aquel que invocare el nombre del Señor, será salvo.",r:"Romanos 10:13"},{t:"El ladrón no viene sino para hurtar y matar y destruir; yo he venido para que tengan vida, y para que la tengan en abundancia.",r:"Juan 10:10"}]}
+  fe:{nombre:"Fe y esperanza",vs:[{t:"Porque por fe andamos, no por vista.",r:"2 Corintios 5:7"},{t:"Es, pues, la fe la certeza de lo que se espera, la convicción de lo que no se ve.",r:"Hebreos 11:1"},{t:"Jesús le dijo: Si puedes creer, al que cree todo le es posible.",r:"Marcos 9:23"},{t:"Confía en el SEÑOR con todo tu corazón, y no te apoyes en tu propio entendimiento.",r:"Proverbios 3:5"},{t:"El justo por la fe vivirá.",r:"Romanos 1:17"},{t:"Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá.",r:"Mateo 7:7"},{t:"Porque todo lo que es nacido de Dios vence al mundo; y esta es la victoria: nuestra fe.",r:"1 Juan 5:4"},{t:"Mas el que persevere hasta el fin, éste será salvo.",r:"Mateo 24:13"},{t:"Somos hechura suya, creados en Cristo Jesús para buenas obras.",r:"Efesios 2:10"}]},
+  amor:{nombre:"Amor de Dios",vs:[{t:"Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.",r:"Juan 3:16"},{t:"El amor es sufrido, es benigno; el amor no tiene envidia, el amor no es jactancioso.",r:"1 Corintios 13:4"},{t:"En esto consiste el amor: no en que nosotros hayamos amado a Dios, sino en que él nos amó a nosotros.",r:"1 Juan 4:10"},{t:"Amados, amémonos unos a otros; porque el amor es de Dios.",r:"1 Juan 4:7"},{t:"Nadie tiene mayor amor que este, que uno ponga su vida por sus amigos.",r:"Juan 15:13"},{t:"Y sobre todas estas cosas vestíos de amor, que es el vínculo perfecto.",r:"Colosenses 3:14"},{t:"El que no ama no ha conocido a Dios; porque Dios es amor.",r:"1 Juan 4:8"},{t:"Mas Dios muestra su amor para con nosotros, en que siendo aún pecadores, Cristo murió por nosotros.",r:"Romanos 5:8"}]},
+  fortaleza:{nombre:"Fortaleza",vs:[{t:"Todo lo puedo en Cristo que me fortalece.",r:"Filipenses 4:13"},{t:"El SEÑOR es mi fortaleza y mi escudo; en él confió mi corazón, y fui ayudado.",r:"Salmos 28:7"},{t:"¡Sé fuerte y valiente! No temas ni te desalientes.",r:"Josué 1:9"},{t:"Los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas.",r:"Isaías 40:31"},{t:"No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo.",r:"Isaías 41:10"},{t:"Jehová es mi luz y mi salvación; ¿de quién temeré?",r:"Salmos 27:1"},{t:"Mi poder se perfecciona en la debilidad.",r:"2 Corintios 12:9"},{t:"Jehová peleará por vosotros, y vosotros estaréis tranquilos.",r:"Éxodo 14:14"},{t:"Esforzaos en el Señor, y en el poder de su fuerza.",r:"Efesios 6:10"}]},
+  paz:{nombre:"Paz interior",vs:[{t:"La paz os dejo, mi paz os doy. No se turbe vuestro corazón, ni tenga miedo.",r:"Juan 14:27"},{t:"Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios.",r:"Filipenses 4:6"},{t:"Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones.",r:"Filipenses 4:7"},{t:"Tú guardarás en completa paz a aquel cuyo pensamiento en ti persevera.",r:"Isaías 26:3"},{t:"Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar.",r:"Mateo 11:28"},{t:"Echad toda vuestra ansiedad sobre él, porque él tiene cuidado de vosotros.",r:"1 Pedro 5:7"},{t:"En paz me acostaré, y asimismo dormiré; porque solo tú, Jehová, me haces vivir confiado.",r:"Salmos 4:8"}]},
+  gratitud:{nombre:"Gratitud",vs:[{t:"Dad gracias en todo, porque esta es la voluntad de Dios para con vosotros en Cristo Jesús.",r:"1 Tesalonicenses 5:18"},{t:"Entrad por sus puertas con acción de gracias, por sus atrios con alabanza.",r:"Salmos 100:4"},{t:"¡Gracias a Dios por su don inefable!",r:"2 Corintios 9:15"},{t:"Este es el día que hizo Jehová; nos gozaremos y alegraremos en él.",r:"Salmos 118:24"},{t:"Bendice, alma mía, a Jehová, y no olvides ninguno de sus beneficios.",r:"Salmos 103:2"}]},
+  sabiduria:{nombre:"Sabiduría",vs:[{t:"El principio de la sabiduría es el temor de Jehová.",r:"Proverbios 9:10"},{t:"Si alguno de vosotros tiene falta de sabiduría, pídala a Dios, el cual da a todos abundantemente y sin reproche.",r:"Santiago 1:5"},{t:"Porque Jehová da la sabiduría, y de su boca viene el conocimiento y la inteligencia.",r:"Proverbios 2:6"},{t:"El que halla la sabiduría halla la vida, y alcanza el favor de Jehová.",r:"Proverbios 8:35"},{t:"Bienaventurado el hombre que halla la sabiduría, y que obtiene la inteligencia.",r:"Proverbios 3:13"}]},
+  familia:{nombre:"Familia",vs:[{t:"Honra a tu padre y a tu madre, para que tus días se alarguen en la tierra.",r:"Éxodo 20:12"},{t:"Pero yo y mi casa serviremos a Jehová.",r:"Josué 24:15"},{t:"Los hijos son herencia de Jehová; y fruto del vientre su recompensa.",r:"Salmos 127:3"},{t:"Instruye al niño en su camino, y aun cuando fuere viejo no se apartará de él.",r:"Proverbios 22:6"},{t:"Maridos, amad a vuestras mujeres, así como Cristo amó a la iglesia.",r:"Efesios 5:25"},{t:"Y vosotros, padres, no provoquéis a ira a vuestros hijos, sino criadlos en disciplina y amonestación del Señor.",r:"Efesios 6:4"}]},
+  promesas:{nombre:"Promesas de Dios",vs:[{t:"Porque yo sé los pensamientos que tengo acerca de vosotros, dice Jehová, pensamientos de paz, y no de mal.",r:"Jeremías 29:11"},{t:"A los que aman a Dios, todas las cosas les ayudan a bien.",r:"Romanos 8:28"},{t:"Mi Dios, pues, suplirá todo lo que os falta conforme a sus riquezas en gloria en Cristo Jesús.",r:"Filipenses 4:19"},{t:"Las misericordias de Jehová no decaen. Nuevas son cada mañana.",r:"Lamentaciones 3:22-23"},{t:"He aquí yo estoy con vosotros todos los días, hasta el fin del mundo.",r:"Mateo 28:20"},{t:"Ninguna arma forjada contra ti prosperará.",r:"Isaías 54:17"},{t:"Clama a mí, y yo te responderé, y te enseñaré cosas grandes y ocultas.",r:"Jeremías 33:3"}]},
+  oracion:{nombre:"Oración",vs:[{t:"Orad sin cesar.",r:"1 Tesalonicenses 5:17"},{t:"Cercano está Jehová a todos los que le invocan de veras.",r:"Salmos 145:18"},{t:"Si se humillare mi pueblo, y oraren, y buscaren mi rostro... yo oiré desde los cielos.",r:"2 Crónicas 7:14"},{t:"Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá.",r:"Mateo 7:7"},{t:"La oración eficaz del justo puede mucho.",r:"Santiago 5:16"},{t:"Mas tú, cuando ores, entra en tu aposento, y cerrada la puerta, ora a tu Padre que está en secreto.",r:"Mateo 6:6"}]},
+  perdon:{nombre:"Perdón",vs:[{t:"Si confesamos nuestros pecados, él es fiel y justo para perdonar nuestros pecados.",r:"1 Juan 1:9"},{t:"Sed benignos unos con otros, misericordiosos, perdonándoos unos a otros.",r:"Efesios 4:32"},{t:"Cuanto está lejos el oriente del occidente, hizo alejar de nosotros nuestras rebeliones.",r:"Salmos 103:12"},{t:"Porque si perdonáis a los hombres sus ofensas, os perdonará también a vosotros vuestro Padre celestial.",r:"Mateo 6:14"},{t:"Yo, yo soy el que borro tus rebeliones por amor de mí mismo.",r:"Isaías 43:25"}]},
+  mision:{nombre:"Misión",vs:[{t:"Id, y haced discípulos a todas las naciones.",r:"Mateo 28:19"},{t:"Vosotros sois la luz del mundo; una ciudad asentada sobre un monte no se puede esconder.",r:"Mateo 5:14"},{t:"Me seréis testigos hasta lo último de la tierra.",r:"Hechos 1:8"},{t:"Vosotros sois la sal de la tierra.",r:"Mateo 5:13"},{t:"La mies a la verdad es mucha, mas los obreros pocos.",r:"Lucas 10:2"}]},
+  alabanza:{nombre:"Alabanza",vs:[{t:"Alabad a Jehová, porque él es bueno; porque para siempre es su misericordia.",r:"Salmos 136:1"},{t:"Todo lo que respira alabe a JAH. Aleluya.",r:"Salmos 150:6"},{t:"Regocijaos en el Señor siempre. Otra vez digo: ¡Regocijaos!",r:"Filipenses 4:4"},{t:"Cantad a Jehová cántico nuevo; su alabanza sea en la congregación de los santos.",r:"Salmos 149:1"},{t:"Bendice, alma mía, a Jehová, y bendiga todo mi ser su santo nombre.",r:"Salmos 103:1"}]},
+  perseverancia:{nombre:"Perseverancia",vs:[{t:"No nos cansemos, pues, de hacer bien; porque a su tiempo segaremos, si no desmayamos.",r:"Gálatas 6:9"},{t:"Corramos con paciencia la carrera que tenemos por delante.",r:"Hebreos 12:1"},{t:"Sabiendo que la prueba de vuestra fe produce paciencia.",r:"Santiago 1:3"},{t:"El que comenzó en vosotros la buena obra, la perfeccionará hasta el día de Jesucristo.",r:"Filipenses 1:6"}]},
+  salvacion:{nombre:"Salvación",vs:[{t:"Porque por gracia sois salvos por medio de la fe; y esto no de vosotros, pues es don de Dios.",r:"Efesios 2:8"},{t:"Yo soy el camino, y la verdad, y la vida; nadie viene al Padre, sino por mí.",r:"Juan 14:6"},{t:"En ningún otro hay salvación; porque no hay otro nombre bajo el cielo en que podamos ser salvos.",r:"Hechos 4:12"},{t:"Porque todo aquel que invocare el nombre del Señor, será salvo.",r:"Romanos 10:13"},{t:"He venido para que tengan vida, y para que la tengan en abundancia.",r:"Juan 10:10"}]}
 };
 
-const ESTILOS = {
-  amanecer:{bg:'linear-gradient(145deg,#FEE5C0,#FBBF6E,#F97C4A)',color:'#4A1B0C',badge:'rgba(250,180,80,0.35)',bc:'#712B13',icon:'☀️',logoFilter:'brightness(0) sepia(1) hue-rotate(330deg) saturate(3)'},
-  noche:{bg:'linear-gradient(145deg,#1a1a3e,#26215C,#0C447C)',color:'#E6F1FB',badge:'rgba(100,120,220,0.3)',bc:'#B5D4F4',icon:'🌙',logoFilter:'brightness(0) invert(1)'},
-  naturaleza:{bg:'linear-gradient(145deg,#EAF3DE,#C0DD97,#639922)',color:'#173404',badge:'rgba(100,180,80,0.3)',bc:'#27500A',icon:'🌿',logoFilter:'brightness(0) sepia(1) hue-rotate(60deg) saturate(2)'},
-  fuego:{bg:'linear-gradient(145deg,#FAEEDA,#EF9F27,#D85A30)',color:'#412402',badge:'rgba(240,150,50,0.35)',bc:'#633806',icon:'🔥',logoFilter:'brightness(0) sepia(1) saturate(3)'},
-  mar:{bg:'linear-gradient(145deg,#E6F1FB,#85B7EB,#185FA5)',color:'#042C53',badge:'rgba(80,150,220,0.25)',bc:'#0C447C',icon:'🌊',logoFilter:'brightness(0) invert(1) opacity(0.7)'},
-  cielo:{bg:'linear-gradient(145deg,#ffffff,#E6F1FB,#B5D4F4)',color:'#042C53',badge:'rgba(150,190,240,0.3)',bc:'#185FA5',icon:'☁️',logoFilter:'none'}
-};
+// ── ESTILOS DE FONDO ──────────────────────────────────────────────
+const ESTILOS = [
+  { id:'amanecer', nombre:'Amanecer', tipo:'foto',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,'#FF6B35'); g.addColorStop(0.3,'#F7C59F'); g.addColorStop(0.6,'#FFCBA4'); g.addColorStop(1,'#FF8C42');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // Sun
+      ctx.save(); ctx.globalAlpha=0.25;
+      let sg=ctx.createRadialGradient(w*0.5,h*0.45,0,w*0.5,h*0.45,w*0.35);
+      sg.addColorStop(0,'#FFF176'); sg.addColorStop(1,'transparent');
+      ctx.fillStyle=sg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+      // Horizon glow
+      ctx.save(); ctx.globalAlpha=0.3;
+      let hg=ctx.createLinearGradient(0,h*0.5,0,h*0.7);
+      hg.addColorStop(0,'#FFF9C4'); hg.addColorStop(1,'transparent');
+      ctx.fillStyle=hg; ctx.fillRect(0,h*0.5,w,h*0.2);
+      ctx.restore();
+      // Clouds
+      drawCloud(ctx,w*0.2,h*0.25,w*0.18,'rgba(255,255,255,0.2)');
+      drawCloud(ctx,w*0.7,h*0.2,w*0.22,'rgba(255,255,255,0.15)');
+      drawCloud(ctx,w*0.5,h*0.35,w*0.15,'rgba(255,200,100,0.2)');
+    }, textColor:'#fff', shadow:'rgba(100,40,0,0.6)'
+  },
+  { id:'noche', nombre:'Noche', tipo:'foto',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,0,0,h);
+      g.addColorStop(0,'#0a0a2e'); g.addColorStop(0.5,'#1a1a5e'); g.addColorStop(1,'#0d0d3b');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // Stars
+      ctx.save();
+      for(let i=0;i<200;i++){
+        let x=Math.random()*w, y=Math.random()*h*0.75;
+        let r=Math.random()*2.5+0.5;
+        ctx.globalAlpha=Math.random()*0.8+0.2;
+        ctx.fillStyle='#fff';
+        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+      // Moon
+      ctx.save(); ctx.globalAlpha=0.9;
+      let mg=ctx.createRadialGradient(w*0.75,h*0.2,0,w*0.75,h*0.2,w*0.1);
+      mg.addColorStop(0,'#FFFDE7'); mg.addColorStop(0.7,'#FFF9C4'); mg.addColorStop(1,'transparent');
+      ctx.fillStyle=mg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+      // Milky way
+      ctx.save(); ctx.globalAlpha=0.08;
+      let mw=ctx.createLinearGradient(0,h*0.1,w,h*0.6);
+      mw.addColorStop(0,'transparent'); mw.addColorStop(0.5,'#B39DDB'); mw.addColorStop(1,'transparent');
+      ctx.fillStyle=mw; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+    }, textColor:'#E8EAF6', shadow:'rgba(0,0,50,0.8)'
+  },
+  { id:'naturaleza', nombre:'Naturaleza', tipo:'foto',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,0,0,h);
+      g.addColorStop(0,'#1B5E20'); g.addColorStop(0.4,'#2E7D32'); g.addColorStop(1,'#4CAF50');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // Light rays
+      ctx.save(); ctx.globalAlpha=0.12;
+      for(let i=0;i<8;i++){
+        let x=w*(0.1+i*0.12);
+        ctx.fillStyle='#FFFFFF';
+        ctx.beginPath(); ctx.moveTo(x-20,0); ctx.lineTo(x+20,0); ctx.lineTo(x+60,h); ctx.lineTo(x-60,h); ctx.closePath(); ctx.fill();
+      }
+      ctx.restore();
+      // Leaves bokeh
+      ctx.save();
+      for(let i=0;i<30;i++){
+        ctx.globalAlpha=Math.random()*0.15+0.05;
+        ctx.fillStyle=i%2===0?'#A5D6A7':'#DCEDC8';
+        ctx.beginPath(); ctx.arc(Math.random()*w,Math.random()*h,Math.random()*40+10,0,Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+      // Sunlight from top
+      ctx.save(); ctx.globalAlpha=0.2;
+      let sg=ctx.createRadialGradient(w*0.5,0,0,w*0.5,0,h*0.6);
+      sg.addColorStop(0,'#F9FBE7'); sg.addColorStop(1,'transparent');
+      ctx.fillStyle=sg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+    }, textColor:'#fff', shadow:'rgba(0,50,0,0.7)'
+  },
+  { id:'fuego', nombre:'Fuego', tipo:'foto',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,h,0,0);
+      g.addColorStop(0,'#BF360C'); g.addColorStop(0.3,'#E64A19'); g.addColorStop(0.6,'#FF6F00'); g.addColorStop(1,'#FF8F00');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // Flame shapes
+      ctx.save(); ctx.globalAlpha=0.3;
+      for(let i=0;i<12;i++){
+        let x=Math.random()*w, baseY=h, tipY=h*(0.1+Math.random()*0.5);
+        let fg=ctx.createLinearGradient(0,tipY,0,baseY);
+        fg.addColorStop(0,'rgba(255,245,157,0.8)'); fg.addColorStop(0.5,'rgba(255,167,38,0.5)'); fg.addColorStop(1,'transparent');
+        ctx.fillStyle=fg;
+        ctx.beginPath(); ctx.moveTo(x,baseY); ctx.quadraticCurveTo(x-30,baseY*0.6,x,tipY); ctx.quadraticCurveTo(x+30,baseY*0.6,x,baseY); ctx.fill();
+      }
+      ctx.restore();
+      // Glow center
+      ctx.save(); ctx.globalAlpha=0.25;
+      let cg=ctx.createRadialGradient(w*0.5,h*0.6,0,w*0.5,h*0.6,w*0.4);
+      cg.addColorStop(0,'#FFF9C4'); cg.addColorStop(1,'transparent');
+      ctx.fillStyle=cg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+    }, textColor:'#FFF9C4', shadow:'rgba(80,0,0,0.7)'
+  },
+  { id:'mar', nombre:'Mar', tipo:'foto',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,0,0,h);
+      g.addColorStop(0,'#01579B'); g.addColorStop(0.4,'#0288D1'); g.addColorStop(0.7,'#29B6F6'); g.addColorStop(1,'#4FC3F7');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // Waves
+      ctx.save(); ctx.globalAlpha=0.15;
+      for(let i=0;i<6;i++){
+        let y=h*(0.5+i*0.08);
+        ctx.strokeStyle='#fff'; ctx.lineWidth=w*0.015;
+        ctx.beginPath(); ctx.moveTo(0,y);
+        for(let x=0;x<=w;x+=w/8){
+          ctx.quadraticCurveTo(x+w/16,y-h*0.02,x+w/8,y);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+      // Light shimmer
+      ctx.save(); ctx.globalAlpha=0.2;
+      let sg=ctx.createRadialGradient(w*0.5,h*0.3,0,w*0.5,h*0.3,w*0.4);
+      sg.addColorStop(0,'#E1F5FE'); sg.addColorStop(1,'transparent');
+      ctx.fillStyle=sg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+      // Sparkles
+      ctx.save();
+      for(let i=0;i<40;i++){
+        ctx.globalAlpha=Math.random()*0.4+0.1;
+        ctx.fillStyle='#fff';
+        let x=Math.random()*w, y=h*0.4+Math.random()*h*0.5;
+        ctx.beginPath(); ctx.arc(x,y,Math.random()*3+1,0,Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+    }, textColor:'#fff', shadow:'rgba(0,30,80,0.7)'
+  },
+  { id:'cielo', nombre:'Cielo', tipo:'foto',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,0,0,h);
+      g.addColorStop(0,'#1565C0'); g.addColorStop(0.4,'#42A5F5'); g.addColorStop(0.7,'#90CAF9'); g.addColorStop(1,'#E3F2FD');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      drawCloud(ctx,w*0.15,h*0.2,w*0.28,'rgba(255,255,255,0.85)');
+      drawCloud(ctx,w*0.65,h*0.15,w*0.32,'rgba(255,255,255,0.9)');
+      drawCloud(ctx,w*0.4,h*0.38,w*0.22,'rgba(255,255,255,0.7)');
+      drawCloud(ctx,w*0.8,h*0.45,w*0.2,'rgba(255,255,255,0.6)');
+      drawCloud(ctx,w*0.05,h*0.5,w*0.18,'rgba(255,255,255,0.5)');
+      // Sun glow
+      ctx.save(); ctx.globalAlpha=0.3;
+      let sg=ctx.createRadialGradient(w*0.8,h*0.1,0,w*0.8,h*0.1,w*0.25);
+      sg.addColorStop(0,'#FFF9C4'); sg.addColorStop(1,'transparent');
+      ctx.fillStyle=sg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+    }, textColor:'#0D47A1', shadow:'rgba(0,20,80,0.4)'
+  },
+  { id:'purpura', nombre:'Majestad', tipo:'degradado',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,'#4A148C'); g.addColorStop(0.5,'#6A1B9A'); g.addColorStop(1,'#9C27B0');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // Bokeh
+      ctx.save();
+      for(let i=0;i<25;i++){
+        ctx.globalAlpha=Math.random()*0.12+0.03;
+        ctx.fillStyle='#CE93D8';
+        ctx.beginPath(); ctx.arc(Math.random()*w,Math.random()*h,Math.random()*80+20,0,Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+      ctx.save(); ctx.globalAlpha=0.15;
+      let cg=ctx.createRadialGradient(w*0.5,h*0.4,0,w*0.5,h*0.4,w*0.5);
+      cg.addColorStop(0,'#F3E5F5'); cg.addColorStop(1,'transparent');
+      ctx.fillStyle=cg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+    }, textColor:'#F3E5F5', shadow:'rgba(40,0,60,0.7)'
+  },
+  { id:'dorado', nombre:'Gloria', tipo:'degradado',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,'#F57F17'); g.addColorStop(0.4,'#F9A825'); g.addColorStop(0.7,'#FBC02D'); g.addColorStop(1,'#F57F17');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      ctx.save(); ctx.globalAlpha=0.15;
+      let rg=ctx.createRadialGradient(w*0.5,h*0.5,0,w*0.5,h*0.5,w*0.6);
+      rg.addColorStop(0,'#FFFDE7'); rg.addColorStop(1,'transparent');
+      ctx.fillStyle=rg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+      // Gold rays
+      ctx.save(); ctx.globalAlpha=0.08;
+      for(let i=0;i<12;i++){
+        let angle=(i/12)*Math.PI*2;
+        ctx.strokeStyle='#FFFFFF'; ctx.lineWidth=w*0.04;
+        ctx.beginPath(); ctx.moveTo(w*0.5,h*0.5);
+        ctx.lineTo(w*0.5+Math.cos(angle)*w, h*0.5+Math.sin(angle)*h);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }, textColor:'#4E342E', shadow:'rgba(80,40,0,0.5)'
+  },
+  { id:'azul_eef', nombre:'EEF Azul', tipo:'degradado',
+    draw(ctx,w,h){
+      let g=ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,'#042C53'); g.addColorStop(0.5,'#185FA5'); g.addColorStop(1,'#1B75BC');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      ctx.save(); ctx.globalAlpha=0.12;
+      for(let i=0;i<20;i++){
+        ctx.fillStyle='#B5D4F4';
+        ctx.beginPath(); ctx.arc(Math.random()*w,Math.random()*h,Math.random()*60+10,0,Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+      ctx.save(); ctx.globalAlpha=0.2;
+      let cg=ctx.createRadialGradient(w*0.5,h*0.4,0,w*0.5,h*0.4,w*0.45);
+      cg.addColorStop(0,'#E3F2FD'); cg.addColorStop(1,'transparent');
+      ctx.fillStyle=cg; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+    }, textColor:'#E3F2FD', shadow:'rgba(0,20,60,0.8)'
+  }
+];
 
-let DATA, temaActual='fe', estiloActual=null, versiculoActual=null;
+function drawCloud(ctx,cx,cy,size,color){
+  ctx.save(); ctx.fillStyle=color;
+  const bumps=[{x:0,y:0,r:size*0.35},{x:-size*0.28,y:size*0.08,r:size*0.25},{x:size*0.28,y:size*0.08,r:size*0.28},{x:-size*0.1,y:size*0.15,r:size*0.22},{x:size*0.12,y:size*0.15,r:size*0.2}];
+  bumps.forEach(b=>{ ctx.beginPath(); ctx.arc(cx+b.x,cy+b.y,b.r,0,Math.PI*2); ctx.fill(); });
+  ctx.restore();
+}
 
-function cargarDatos(){ try{ const s=localStorage.getItem('pdv_data'); return s?JSON.parse(s):JSON.parse(JSON.stringify(VD)); }catch(e){ return JSON.parse(JSON.stringify(VD)); } }
-function guardarDatos(d){ try{ localStorage.setItem('pdv_data',JSON.stringify(d)); }catch(e){} }
-DATA = cargarDatos();
+// ── ESTADO ────────────────────────────────────────────────────────
+let DATA, temaActual='fe', estiloActual=ESTILOS[0], versiculoActual=null;
+function cargarDatos(){ try{ const s=localStorage.getItem('pdv_data2'); return s?JSON.parse(s):JSON.parse(JSON.stringify(VD)); }catch(e){ return JSON.parse(JSON.stringify(VD)); } }
+function guardarDatos(d){ try{ localStorage.setItem('pdv_data2',JSON.stringify(d)); }catch(e){} }
+DATA=cargarDatos();
 
+// ── TABS ─────────────────────────────────────────────────────────
 function showTab(tab){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
@@ -175,6 +396,31 @@ function showTab(tab){
   if(tab==='inicio') renderTags();
 }
 
+// ── STYLE GRID ───────────────────────────────────────────────────
+function buildStyleGrid(){
+  const grid=document.getElementById('styleGrid');
+  ESTILOS.forEach((e,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='style-opt'+(i===0?' active':'');
+    wrap.id='style-opt-'+e.id;
+    const cv=document.createElement('canvas');
+    cv.width=120; cv.height=120;
+    const ctx=cv.getContext('2d');
+    e.draw(ctx,120,120);
+    const lbl=document.createElement('span');
+    lbl.textContent=e.nombre;
+    wrap.appendChild(cv); wrap.appendChild(lbl);
+    wrap.onclick=()=>{
+      document.querySelectorAll('.style-opt').forEach(o=>o.classList.remove('active'));
+      wrap.classList.add('active');
+      estiloActual=e;
+      if(versiculoActual) renderCanvas(versiculoActual,e);
+    };
+    grid.appendChild(wrap);
+  });
+}
+
+// ── TAGS ─────────────────────────────────────────────────────────
 function renderTags(){
   const c=document.getElementById('tagList'); c.innerHTML='';
   Object.entries(DATA).forEach(([key,val])=>{
@@ -186,66 +432,181 @@ function renderTags(){
   });
 }
 
-function getEstilo(nuevo=false){
-  const sel=document.getElementById('estilo').value;
-  const keys=Object.keys(ESTILOS);
-  if(sel==='aleatorio'||nuevo){ let k; do{ k=keys[Math.floor(Math.random()*keys.length)]; }while(k===estiloActual&&keys.length>1); return k; }
-  return sel;
+// ── CANVAS RENDER ────────────────────────────────────────────────
+function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+  const words=text.split(' ');
+  let line='', lines=[];
+  words.forEach(w=>{ const test=line+w+' '; if(ctx.measureText(test).width>maxWidth&&line){ lines.push(line.trim()); line=w+' '; }else{ line=test; } });
+  if(line) lines.push(line.trim());
+  const totalH=lines.length*lineHeight;
+  let startY=y-totalH/2+lineHeight/2;
+  lines.forEach(l=>{ ctx.fillText(l,x,startY); startY+=lineHeight; });
+  return lines.length;
 }
 
+function renderCanvas(v,estilo){
+  const canvas=document.getElementById('verseCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=1080, H=1080;
+  canvas.width=W; canvas.height=H;
+
+  // Background
+  if (fotoPropia) {
+    // Draw user photo as background, cover-fit
+    const scale = Math.max(W / fotoPropia.width, H / fotoPropia.height);
+    const sw = fotoPropia.width * scale, sh = fotoPropia.height * scale;
+    const sx = (W - sw) / 2, sy = (H - sh) / 2;
+    ctx.drawImage(fotoPropia, sx, sy, sw, sh);
+  } else {
+    estilo.draw(ctx, W, H);
+  }
+
+  // Dark overlay for text readability
+  ctx.save(); ctx.globalAlpha=0.45;
+  let ov=ctx.createLinearGradient(0,H*0.2,0,H*0.85);
+  ov.addColorStop(0,'transparent'); ov.addColorStop(0.3,'rgba(0,0,0,0.5)'); ov.addColorStop(1,'rgba(0,0,0,0.6)');
+  ctx.fillStyle=ov; ctx.fillRect(0,0,W,H);
+  ctx.restore();
+
+  const tc=estilo.textColor;
+  const sh=estilo.shadow;
+
+  // Logo EEF centered top area
+  if(logoImg.complete && logoImg.naturalWidth>0){
+    const ls=90;
+    ctx.save();
+    ctx.globalAlpha=0.92;
+    ctx.filter='brightness(0) invert(1)';
+    ctx.drawImage(logoImg, W/2-ls/2, H*0.12, ls, ls);
+    ctx.restore();
+  }
+
+  // "Pan de Vida" label
+  ctx.save();
+  ctx.shadowColor=sh; ctx.shadowBlur=12;
+  ctx.fillStyle=tc; ctx.globalAlpha=0.8;
+  ctx.font=`500 ${W*0.033}px -apple-system,sans-serif`;
+  ctx.textAlign='center';
+  ctx.letterSpacing='6px';
+  ctx.fillText('PAN DE VIDA', W/2, H*0.27);
+  ctx.restore();
+
+  // Thin line separator
+  ctx.save(); ctx.globalAlpha=0.4;
+  ctx.strokeStyle=tc; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(W*0.3,H*0.3); ctx.lineTo(W*0.7,H*0.3); ctx.stroke();
+  ctx.restore();
+
+  // Tema badge
+  const tema=DATA[temaActual]?.nombre||'';
+  ctx.save();
+  ctx.fillStyle='rgba(255,255,255,0.18)';
+  const bw=ctx.measureText(tema).width+60;
+  ctx.beginPath(); ctx.roundRect(W/2-bw/2,H*0.32,bw,H*0.048,H*0.024); ctx.fill();
+  ctx.fillStyle=tc; ctx.globalAlpha=0.9;
+  ctx.font=`500 ${W*0.03}px -apple-system,sans-serif`;
+  ctx.textAlign='center';
+  ctx.fillText(tema, W/2, H*0.352);
+  ctx.restore();
+
+  // Verse text
+  ctx.save();
+  ctx.shadowColor=sh; ctx.shadowBlur=20;
+  ctx.fillStyle=tc;
+  ctx.font=`italic ${W*0.052}px Georgia,serif`;
+  ctx.textAlign='center';
+  wrapText(ctx,'\u201c'+v.t+'\u201d', W/2, H*0.54, W*0.78, W*0.068);
+  ctx.restore();
+
+  // Reference
+  ctx.save();
+  ctx.shadowColor=sh; ctx.shadowBlur=10;
+  ctx.fillStyle=tc; ctx.globalAlpha=0.9;
+  ctx.font=`700 ${W*0.038}px -apple-system,sans-serif`;
+  ctx.textAlign='center';
+  ctx.fillText('— '+v.r, W/2, H*0.76);
+  ctx.restore();
+
+  // Bottom separator
+  ctx.save(); ctx.globalAlpha=0.3;
+  ctx.strokeStyle=tc; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(W*0.35,H*0.82); ctx.lineTo(W*0.65,H*0.82); ctx.stroke();
+  ctx.restore();
+
+  // Church name
+  ctx.save();
+  ctx.fillStyle=tc; ctx.globalAlpha=0.65;
+  ctx.font=`500 ${W*0.026}px -apple-system,sans-serif`;
+  ctx.textAlign='center';
+  ctx.letterSpacing='4px';
+  ctx.fillText('IGLESIA \u201cÉL ES FIEL\u201d', W/2, H*0.87);
+  ctx.restore();
+
+  // Date bottom
+  const now=new Date();
+  const fecha=now.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+  ctx.save();
+  ctx.fillStyle=tc; ctx.globalAlpha=0.5;
+  ctx.font=`${W*0.022}px -apple-system,sans-serif`;
+  ctx.textAlign='center';
+  ctx.fillText(fecha, W/2, H*0.92);
+  ctx.restore();
+}
+
+// ── GENERAR ───────────────────────────────────────────────────────
 function generarPan(){
   const lista=DATA[temaActual]?.vs||[];
   if(!lista.length){ toast('No hay versículos en este tema'); return; }
-  const v=lista[Math.floor(Math.random()*lista.length)];
-  versiculoActual=v; aplicarVista(v,temaActual,getEstilo());
-}
-
-function nuevoDiseno(){ if(versiculoActual) aplicarVista(versiculoActual,temaActual,getEstilo(true)); }
-
-function aplicarVista(v,tema,estiloKey){
-  estiloActual=estiloKey;
-  const e=ESTILOS[estiloKey];
-  const inner=document.getElementById('verseInner');
-  inner.style.background=e.bg; inner.style.color=e.color;
-  document.getElementById('decoIcon').textContent=e.icon;
-  document.getElementById('verseLogo').style.filter=e.logoFilter;
-  const badge=document.getElementById('verseBadge');
-  badge.style.background=e.badge; badge.style.color=e.bc;
-  badge.textContent=DATA[tema]?.nombre||tema;
-  const now=new Date();
-  const fecha=now.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
-  ['verseDate','verseText','verseRef'].forEach(id=>document.getElementById(id).style.color=e.color);
-  document.getElementById('verseDate').textContent=fecha;
-  document.getElementById('verseText').textContent='\u201c'+v.t+'\u201d';
-  document.getElementById('verseRef').textContent='— '+v.r;
-  document.getElementById('verseCard').classList.add('visible');
+  versiculoActual=lista[Math.floor(Math.random()*lista.length)];
+  renderCanvas(versiculoActual,estiloActual);
+  document.getElementById('versePreview').classList.add('visible');
   document.getElementById('actions').classList.add('visible');
 }
 
-function copiarTexto(){
-  if(!versiculoActual) return;
-  const txt='"'+versiculoActual.t+'"\n— '+versiculoActual.r+'\n\nIglesia "Él es Fiel"';
-  navigator.clipboard.writeText(txt).then(()=>toast('¡Texto copiado!')).catch(()=>toast('No se pudo copiar'));
+function nuevoDiseno(){
+  const idx=ESTILOS.indexOf(estiloActual);
+  const next=ESTILOS[(idx+1)%ESTILOS.length];
+  estiloActual=next;
+  document.querySelectorAll('.style-opt').forEach(o=>o.classList.remove('active'));
+  document.getElementById('style-opt-'+next.id)?.classList.add('active');
+  if(versiculoActual) renderCanvas(versiculoActual,next);
 }
 
-async function compartir(){
-  if(!versiculoActual) return;
-  const txt='🍞 Pan de Vida\n\n"'+versiculoActual.t+'"\n— '+versiculoActual.r+'\n\nIglesia "Él es Fiel"';
-  if(navigator.share){ await navigator.share({title:'Pan de Vida',text:txt}).catch(()=>{}); } else { copiarTexto(); }
+async function compartirImagen(){
+  const canvas=document.getElementById('verseCanvas');
+  if(!versiculoActual){ toast('Primero genera un versículo'); return; }
+  try{
+    canvas.toBlob(async(blob)=>{
+      const file=new File([blob],'pan-de-vida-eef.png',{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'Pan de Vida',text:'Iglesia "Él es Fiel"'});
+      } else if(navigator.share){
+        await navigator.share({title:'Pan de Vida — EEF',text:'"'+versiculoActual.t+'"\n— '+versiculoActual.r+'\n\nIglesia "Él es Fiel"'});
+      } else {
+        // Download fallback
+        const url=canvas.toDataURL('image/png');
+        const a=document.createElement('a'); a.href=url; a.download='pan-de-vida-eef.png'; a.click();
+        toast('Imagen guardada');
+      }
+    },'image/png',0.95);
+  }catch(e){ toast('No se pudo compartir'); }
 }
 
+// ── ADMIN ─────────────────────────────────────────────────────────
 function renderAdmin(){
   const total=Object.values(DATA).reduce((a,v)=>a+v.vs.length,0);
   const temas=Object.keys(DATA).length;
   const custom=Object.values(DATA).reduce((a,v)=>a+v.vs.filter(x=>x.custom).length,0);
-  document.getElementById('statsBar').innerHTML='<div class="stat"><div class="stat-num">'+total+'</div><div class="stat-label">Versículos</div></div><div class="stat"><div class="stat-num">'+temas+'</div><div class="stat-label">Temas</div></div><div class="stat"><div class="stat-num">'+custom+'</div><div class="stat-label">Agregados</div></div>';
+  document.getElementById('statsBar').innerHTML=
+    '<div class="stat"><div class="stat-num">'+total+'</div><div class="stat-label">Versículos</div></div>'+
+    '<div class="stat"><div class="stat-num">'+temas+'</div><div class="stat-label">Temas</div></div>'+
+    '<div class="stat"><div class="stat-num">'+custom+'</div><div class="stat-label">Agregados</div></div>';
   const sel=document.getElementById('nuevoTema');
   sel.innerHTML=Object.entries(DATA).map(([k,v])=>'<option value="'+k+'">'+v.nombre+'</option>').join('');
   const filtro=document.getElementById('filtroTema');
   filtro.innerHTML='<option value="">— Todos los temas —</option>'+Object.entries(DATA).map(([k,v])=>'<option value="'+k+'">'+v.nombre+' ('+v.vs.length+')</option>').join('');
   renderLista();
 }
-
 function renderLista(){
   const filtro=document.getElementById('filtroTema').value;
   const c=document.getElementById('verseList'); c.innerHTML='';
@@ -260,7 +621,6 @@ function renderLista(){
   });
   if(!c.innerHTML) c.innerHTML='<p style="color:#aaa;text-align:center;padding:16px;">No hay versículos aún</p>';
 }
-
 function agregarVersiculo(){
   const tema=document.getElementById('nuevoTema').value;
   const texto=document.getElementById('nuevoTexto').value.trim();
@@ -268,16 +628,13 @@ function agregarVersiculo(){
   if(!texto||!ref){ toast('Completa el texto y la referencia'); return; }
   DATA[tema].vs.push({t:texto,r:ref,custom:true});
   guardarDatos(DATA);
-  document.getElementById('nuevoTexto').value='';
-  document.getElementById('nuevaRef').value='';
+  document.getElementById('nuevoTexto').value=''; document.getElementById('nuevaRef').value='';
   renderAdmin(); toast('✅ Versículo guardado en '+DATA[tema].nombre);
 }
-
 function eliminarV(tema,idx){
   if(!confirm('¿Eliminar este versículo?')) return;
   DATA[tema].vs.splice(idx,1); guardarDatos(DATA); renderAdmin(); toast('Versículo eliminado');
 }
-
 function agregarTema(){
   const nombre=document.getElementById('nuevoTemaName').value.trim();
   if(!nombre){ toast('Escribe el nombre del tema'); return; }
@@ -287,9 +644,48 @@ function agregarTema(){
   guardarDatos(DATA); document.getElementById('nuevoTemaName').value='';
   renderAdmin(); renderTags(); toast('✅ Tema "'+nombre+'" creado');
 }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
 
-function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
+// ── FOTO PROPIA ──────────────────────────────────────────────────
+let fotoPropia = null;
+
+function cargarFotoPropia(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    fotoPropia = new Image();
+    fotoPropia.onload = function() {
+      // Deselect style grid
+      document.querySelectorAll('.style-opt').forEach(o => o.classList.remove('active'));
+      document.getElementById('uploadZone').style.borderColor = '#185FA5';
+      document.getElementById('uploadZone').style.color = '#185FA5';
+      document.getElementById('uploadLabel').textContent = '✅ ' + file.name;
+      document.getElementById('btnQuitarFoto').style.display = 'block';
+      if (versiculoActual) renderCanvas(versiculoActual, estiloActual);
+      toast('✅ Foto cargada');
+    };
+    fotoPropia.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function quitarFotoPropia() {
+  fotoPropia = null;
+  document.getElementById('fotoInput').value = '';
+  document.getElementById('uploadZone').style.borderColor = '#ccc';
+  document.getElementById('uploadZone').style.color = '#888';
+  document.getElementById('uploadLabel').textContent = 'Toca aquí para elegir una foto de tu galería';
+  document.getElementById('btnQuitarFoto').style.display = 'none';
+  // Re-select current style
+  document.getElementById('style-opt-' + estiloActual.id)?.classList.add('active');
+  if (versiculoActual) renderCanvas(versiculoActual, estiloActual);
+  toast('Foto eliminada');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+buildStyleGrid();
 renderTags();
 </script>
 </body>
