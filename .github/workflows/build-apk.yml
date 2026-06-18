@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Setup Java 17
+      - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
@@ -55,6 +55,14 @@ jobs:
               <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
           </adaptive-icon>
           XMLEOF
+
+      - name: Forzar versión de Gradle compatible con Java 21
+        run: |
+          cd android
+          echo "distributionUrl=https\\://services.gradle.org/distributions/gradle-8.7-all.zip" > gradle/wrapper/gradle-wrapper.properties.new
+          grep -v distributionUrl gradle/wrapper/gradle-wrapper.properties >> gradle/wrapper/gradle-wrapper.properties.new
+          mv gradle/wrapper/gradle-wrapper.properties.new gradle/wrapper/gradle-wrapper.properties
+          cat gradle/wrapper/gradle-wrapper.properties
 
       - name: Permisos Gradle
         run: chmod +x android/gradlew
