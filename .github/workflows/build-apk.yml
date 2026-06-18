@@ -25,13 +25,36 @@ jobs:
           distribution: 'temurin'
 
       - name: Instalar dependencias
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Agregar plataforma Android
         run: npx cap add android
 
       - name: Sincronizar proyecto web con Android
         run: npx cap sync android
+
+      - name: Instalar ícono de la iglesia
+        run: |
+          chmod +x install-icons.sh
+          ./install-icons.sh
+
+      - name: Configurar ícono adaptativo
+        run: |
+          mkdir -p android/app/src/main/res/mipmap-anydpi-v26
+          cat > android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml << 'XMLEOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@mipmap/ic_launcher_background"/>
+              <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+          </adaptive-icon>
+          XMLEOF
+          cat > android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml << 'XMLEOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@mipmap/ic_launcher_background"/>
+              <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+          </adaptive-icon>
+          XMLEOF
 
       - name: Permisos Gradle
         run: chmod +x android/gradlew
