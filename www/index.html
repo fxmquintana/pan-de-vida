@@ -47,6 +47,9 @@
     .badge-custom{display:inline-block;font-size:10px;padding:1px 6px;background:#e8f4e8;color:#2d6a2d;border-radius:8px;margin-left:4px;}
     .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#222;color:white;padding:8px 18px;border-radius:18px;font-size:13px;transition:transform 0.3s;z-index:999;pointer-events:none;white-space:nowrap;}
     .toast.show{transform:translateX(-50%) translateY(0);}
+    #notifSlider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:white;border-radius:50%;transition:0.2s;}
+    #notifToggle:checked + #notifSlider{background-color:#185FA5;}
+    #notifToggle:checked + #notifSlider:before{transform:translateX(20px);}
     .style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
     .style-opt{border-radius:10px;overflow:hidden;cursor:pointer;border:2.5px solid transparent;position:relative;}
     .style-opt.active{border-color:#185FA5;}
@@ -116,6 +119,23 @@
     <label>➕ Nuevo tema</label>
     <input type="text" class="input-field" id="nuevoTemaName" placeholder="ej. Perseverancia"/>
     <button class="btn-primary" onclick="agregarTema()" style="margin-bottom:0">Crear tema</button>
+  </div>
+
+  <div class="card">
+    <label>🔔 Notificación diaria</label>
+    <p style="font-size:13px;color:#666;margin-bottom:10px;line-height:1.5;">Recibe el Pan de Vida cada mañana, aunque no abras la app.</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-size:14px;color:#333;">Activar notificación diaria</span>
+      <label style="position:relative;display:inline-block;width:46px;height:26px;">
+        <input type="checkbox" id="notifToggle" onchange="toggleNotificaciones()" style="opacity:0;width:0;height:0;">
+        <span id="notifSlider" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;border-radius:26px;transition:0.2s;"></span>
+      </label>
+    </div>
+    <div id="notifHoraWrap" style="display:none;">
+      <label>Hora de la notificación</label>
+      <input type="time" class="input-field" id="notifHora" value="07:00" onchange="actualizarHoraNotif()"/>
+      <p id="notifStatus" style="font-size:12px;color:#2d6a2d;margin-top:4px;"></p>
+    </div>
   </div>
   <div class="card">
     <label>📚 Versículos guardados</label>
@@ -392,7 +412,7 @@ function showTab(tab){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('screen-'+tab).classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
-  if(tab==='admin') renderAdmin();
+  if(tab==='admin'){ renderAdmin(); initNotificaciones(); }
   if(tab==='inicio') renderTags();
 }
 
@@ -722,6 +742,125 @@ function quitarFotoPropia() {
   document.getElementById('style-opt-' + estiloActual.id)?.classList.add('active');
   if (versiculoActual) renderCanvas(versiculoActual, estiloActual);
   toast('Foto eliminada');
+}
+
+
+// ── NOTIFICACIONES DIARIAS ──────────────────────────────────────
+const NOTIF_ID = 7001;
+
+function cargarConfigNotif() {
+  try {
+    const s = localStorage.getItem('pdv_notif');
+    return s ? JSON.parse(s) : { activo: false, hora: '07:00' };
+  } catch(e) { return { activo: false, hora: '07:00' }; }
+}
+function guardarConfigNotif(cfg) {
+  try { localStorage.setItem('pdv_notif', JSON.stringify(cfg)); } catch(e) {}
+}
+
+async function toggleNotificaciones() {
+  const checkbox = document.getElementById('notifToggle');
+  const wrap = document.getElementById('notifHoraWrap');
+  const status = document.getElementById('notifStatus');
+  const cfg = cargarConfigNotif();
+
+  if (checkbox.checked) {
+    if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
+      toast('Disponible solo en la app instalada');
+      checkbox.checked = false;
+      return;
+    }
+    const { LocalNotifications } = window.Capacitor.Plugins;
+    const perm = await LocalNotifications.requestPermissions();
+    if (perm.display !== 'granted') {
+      toast('Necesitas dar permiso de notificaciones');
+      checkbox.checked = false;
+      return;
+    }
+    cfg.activo = true;
+    guardarConfigNotif(cfg);
+    wrap.style.display = 'block';
+    await programarNotificacionDiaria();
+    status.textContent = '✅ Activado — recibirás el Pan de Vida a las ' + formatHora(cfg.hora);
+    toast('🔔 Notificación diaria activada');
+  } else {
+    cfg.activo = false;
+    guardarConfigNotif(cfg);
+    wrap.style.display = 'none';
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+      const { LocalNotifications } = window.Capacitor.Plugins;
+      await LocalNotifications.cancel({ notifications: [{ id: NOTIF_ID }] });
+    }
+    toast('Notificación diaria desactivada');
+  }
+}
+
+async function actualizarHoraNotif() {
+  const hora = document.getElementById('notifHora').value;
+  const cfg = cargarConfigNotif();
+  cfg.hora = hora;
+  guardarConfigNotif(cfg);
+  if (cfg.activo) {
+    await programarNotificacionDiaria();
+    document.getElementById('notifStatus').textContent = '✅ Activado — recibirás el Pan de Vida a las ' + formatHora(hora);
+    toast('Hora actualizada a las ' + formatHora(hora));
+  }
+}
+
+function formatHora(hora24) {
+  const [h, m] = hora24.split(':').map(Number);
+  const periodo = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return h12 + ':' + String(m).padStart(2,'0') + ' ' + periodo;
+}
+
+async function programarNotificacionDiaria() {
+  if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
+  const { LocalNotifications } = window.Capacitor.Plugins;
+  const cfg = cargarConfigNotif();
+  const [hh, mm] = cfg.hora.split(':').map(Number);
+
+  // Pick a random theme + verse to show in the notification preview
+  const temaKeys = Object.keys(DATA);
+  const temaKey = temaKeys[Math.floor(Math.random() * temaKeys.length)];
+  const lista = DATA[temaKey]?.vs || [];
+  const v = lista.length ? lista[Math.floor(Math.random() * lista.length)] : { t: 'Que tengas un día bendecido.', r: '' };
+
+  await LocalNotifications.cancel({ notifications: [{ id: NOTIF_ID }] });
+
+  await LocalNotifications.schedule({
+    notifications: [{
+      id: NOTIF_ID,
+      title: '🍞 Pan de Vida — Iglesia "Él es Fiel"',
+      body: '"' + v.t + '" — ' + v.r,
+      schedule: {
+        on: { hour: hh, minute: mm },
+        allowWhileIdle: true,
+        repeats: true
+      },
+      smallIcon: 'ic_launcher',
+      extra: { tema: temaKey }
+    }]
+  });
+}
+
+async function initNotificaciones() {
+  const cfg = cargarConfigNotif();
+  const checkbox = document.getElementById('notifToggle');
+  const wrap = document.getElementById('notifHoraWrap');
+  const horaInput = document.getElementById('notifHora');
+  const status = document.getElementById('notifStatus');
+
+  horaInput.value = cfg.hora;
+  checkbox.checked = cfg.activo;
+  wrap.style.display = cfg.activo ? 'block' : 'none';
+  if (cfg.activo) {
+    status.textContent = '✅ Activado — recibirás el Pan de Vida a las ' + formatHora(cfg.hora);
+    // Re-schedule on app open in case it was cleared (e.g. after reboot on some devices)
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+      await programarNotificacionDiaria();
+    }
+  }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────
